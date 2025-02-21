@@ -10,8 +10,9 @@
   home.extraActivationPath = [ pkgs.uv ];
   # The home.packages option allows you to install Nix packages into your env.
   home.packages = with pkgs; [
-    git
-    curl
+    git   # Distributed revision control system
+    curl  # Get a file from an HTTP, HTTPS or FTP server
+    jq    # CLI for working with JSON
     # All that silly shit
     dwt1-shell-color-scripts # Scripts to look good
     fastfetch # Sys Info Fetcher
@@ -55,6 +56,58 @@
     EDITOR = "nvim";
     PAGER = "bat";
   };
+
+  # ************************************************************************** //
+  #                             Activation Scripts                             //
+  # ************************************************************************** //
+    
+  
+  # Activation script to set up SSH key and clone dotfiles repository
+  home.activation.cloneDotfiles = lib.mkAfter ''
+    # Define SSH key path
+    SSH_KEY="$HOME/.ssh/id_ed25519"
+    DOTFILES="git@github.com:PedroZappa/.dotfiles.git"
+
+    # Check if SSH key exists
+    if [ ! -f "$SSH_KEY" ]; then
+      echo "No SSH key found. Generating a new SSH key..."
+
+      # Generate a new SSH key
+      ssh-keygen -t ed25519 -C "[email protected]" -f "$SSH_KEY" -N ""
+
+      # Start the ssh-agent and add the new key
+      eval "$(ssh-agent -s)"
+      ssh-add "$SSH_KEY"
+
+      # Extract the public key
+      PUB_KEY=$(cat "$SSH_KEY.pub")
+
+      # Prompt user for GitHub username and personal access token
+      echo "Please enter your GitHub username:"
+      read -r GITHUB_USER
+      echo "Please enter your GitHub personal access token:"
+      read -rs GITHUB_TOKEN
+
+      # Add the SSH key to the user's GitHub account
+      echo "Adding the SSH key to your GitHub account..."
+      curl -u "$GITHUB_USER:$GITHUB_TOKEN" \
+        --data "{\"title\":\"$(hostname) - $(date)\",\"key\":\"$PUB_KEY\"}" \
+        https://api.github.com/user/keys
+
+      echo "SSH key added successfully."
+    else
+      echo "SSH key already exists."
+    fi
+
+    # Clone the dotfiles repository if it doesn't exist
+    if [ ! -d "$HOME/.dotfiles" ]; then
+      echo "Cloning dotfiles repository..."
+      git clone $DOTFILES "$HOME/.dotfiles"
+      echo "Dotfiles repository cloned successfully."
+    else
+      echo "Dotfiles repository already exists."
+    fi
+  '';
 
   # Activation script to install oh-my-tmux if not already installed
   home.activation.installOhMyTmux = lib.mkAfter ''

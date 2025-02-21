@@ -174,6 +174,7 @@ in {
 
   security = {
     rtkit.enable = true;  
+    polkit.enable = true;
     sudo = {
       enable = true;
       extraConfig = ''
@@ -376,9 +377,9 @@ in {
     usbutils # lsusb
 
     # Utils
-    
     virt-manager  # Virtual Machine Manager
     virt-viewer   # ...
+    polkit_gnome  # Authentication Manager
     zoxide        # Navigation Helper (Teleporter) 
     ranger        # Vim-like Navigator 
     eza           # Colourful ls
@@ -422,6 +423,7 @@ in {
     walker # app launcher
     dolphin # file manager
 
+    qt6ct
 
 
     # Create an FHS environment using the command `fhs`, enabling the execution of non-NixOS packages in NixOS!
