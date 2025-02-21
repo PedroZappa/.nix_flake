@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Flake that builds my desktop and VM";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
@@ -15,40 +15,64 @@
     home-manager,
   }: let
     # Variables Used In Flake
+    system = "x86_64-linux";
     vars = {
-      system = "x86_64-linux";
-      hostname = "znix";
       user = "zedro";
-      location = "$HOME/.dotfiles/nixos";
+      location = "$HOME/.nix_flake";
       terminal = "ghostty";
       editor = "nvim";
     };
-    system = vars.system;
+
+    # System Specific ettings
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
     };
+
+    # Import zap-zsh.nix for use in configurations
     zap-zsh = import ./zap-zsh.nix {inherit (pkgs) lib stdenv fetchFromGitHub;};
+
   in {
     # System Wide Config
     nixosConfigurations = {
-      ${vars.hostname} = nixpkgs.lib.nixosSystem {
+      znix = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = {inherit inputs;};
+        specialArgs = { 
+          inherit inputs; 
+        };
         modules = [ 
-          ./configuration.nix 
+          ./hosts/znix/configuration.nix
+          # ./hosts/znix/hardware-configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            # home-manager.extraSpecialArgs = { inherit vars; };
             home-manager.users.${vars.user} = import ./home.nix;
-
-            # Optionally, use home-manager.extraSpecialArgs to pass
-            # arguments to home.nix
           }
         ];
       };
       specialArgs = {inherit zap-zsh;};
     };
+
+    # VM configuration
+    # nixvm = nixpkgs.lib.nixosSystem {
+    #   inherit system;
+    #   specialArgs = { 
+    #     inherit inputs zap-zsh; 
+    #     hostname = "nixvm"; 
+    #   };
+    #   modules = [
+    #     ./hosts/nixvm/configuration.nix
+    #     ./hosts/nixvm/hardware-configuration.nix
+    #     home-manager.nixosModules.home-manager
+    #     {
+    #       home-manager.useGlobalPkgs = true;
+    #       home-manager.useUserPackages = true;
+    #       home-manager.extraSpecialArgs = { inherit vars; };
+    #       home-manager.users.${vars.user} = import ./home.nix;
+    #     }
+    #   ];
+    # };
   };
 }
