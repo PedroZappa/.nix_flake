@@ -10,6 +10,8 @@
   home.extraActivationPath = [ pkgs.uv ];
   # The home.packages option allows you to install Nix packages into your env.
   home.packages = with pkgs; [
+    git
+    curl
     # All that silly shit
     dwt1-shell-color-scripts # Scripts to look good
     fastfetch # Sys Info Fetcher
@@ -54,6 +56,30 @@
     PAGER = "bat";
   };
 
+  # Activation script to install oh-my-tmux if not already installed
+  home.activation.installOhMyTmux = lib.mkAfter ''
+    if [ ! -d "$HOME/.tmux" ] || [ ! -L "$HOME/.tmux.conf" ]; then
+      echo "Installing oh-my-tmux..."
+      git clone https://github.com/gpakosz/.tmux.git "$HOME/.tmux"
+      ln -s -f "$HOME/.tmux/.tmux.conf" "$HOME/.tmux.conf"
+      cp "$HOME/.tmux/.tmux.conf.local" "$HOME/.tmux.conf.local"
+      echo "oh-my-tmux installation complete."
+    else
+      echo "oh-my-tmux is already installed."
+    fi
+  '';
+
+  # Activation script to install Zap if not already installed
+  home.activation.installZap = lib.mkAfter ''
+    if [ ! -d "$HOME/.local/share/zap" ]; then
+      echo "Installing Zap: zsh's Package Manager..."
+      zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1
+      echo "Zap installation complete. 🤙"
+    else
+      echo "Zap is already installed."
+    fi
+  '';
+
   # Activation script to install posting (if not already installed)
   home.activation.installPosting = lib.mkAfter ''
     if ! command -v posting >/dev/null 2>&1; then
@@ -69,6 +95,9 @@
     home-manager.enable = true;
     # Gnome Shell
     gnome-shell = {
+      enable = true;
+    };
+    tmux = {
       enable = true;
     };
     neovim = {
