@@ -1,8 +1,5 @@
 # man home-configuration.nix
-
-{ config, pkgs, lib, ... }:
-
-{
+{ config, pkgs, lib, ... }: {
   home.username = "zedro";
   home.homeDirectory = "/home/zedro";
   home.stateVersion = "24.11"; # Please read the release notes before changing.
@@ -10,15 +7,15 @@
   home.extraActivationPath = [ pkgs.uv ];
   # The home.packages option allows you to install Nix packages into your env.
   home.packages = with pkgs; [
-    git   # Distributed revision control system
-    curl  # Get a file from an HTTP, HTTPS or FTP server
-    jq    # CLI for working with JSON
+    git # Distributed revision control system
+    curl # Get a file from an HTTP, HTTPS or FTP server
+    jq # CLI for working with JSON
     # All that silly shit
     dwt1-shell-color-scripts # Scripts to look good
     fastfetch # Sys Info Fetcher
-    clolcat   # lol 
-    htop      # sys Monitor
-    eza       # Colourful ls
+    clolcat # lol
+    htop # sys Monitor
+    eza # Colourful ls
 
     # (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
 
@@ -32,8 +29,7 @@
 
   # Home Manager is pretty good at managing dotfileS. The primary way to manage
   # plain files is through 'home.file'.
-  home.file = {
-  };
+  home.file = { };
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -60,8 +56,7 @@
   # ************************************************************************** //
   #                             Activation Scripts                             //
   # ************************************************************************** //
-    
-  
+
   # Activation script to set up SSH key and clone dotfiles repository
   home.activation.cloneDotfiles = lib.mkAfter ''
     # Define SSH key path
@@ -144,21 +139,12 @@
   '';
 
   # Let Home Manager install and manage itself.
-  programs = { 
+  programs = {
     home-manager.enable = true;
     # Gnome Shell
-    gnome-shell = {
-      enable = true;
-    };
-    tmux = {
-      enable = true;
-    };
-    neovim = {
-      enable = true;
-    };
-    starship = {
-      enable = true;
-    };
+    gnome-shell = { enable = true; };
+    tmux = { enable = true; };
+    neovim = { enable = true; };
+    starship = { enable = true; };
   };
 }
-

@@ -2,33 +2,23 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 # Use Flake on fresh install
-/*
-Setup SSH key on Github
-*/
+# Setup SSH key on Github
 # sudo su
 # nix-env -iA nixos.git nixos.vim
 # git clone git@github.com:PedroZappa/.dotfiles.git
 # nixos-install --flake ".dotfiles/nixos#<host>"
 # reboot
-/*
-Log back in
-*/
+# Log back in
 # sudo rm -fr /etc/nixos/configuration.nix
-/*
-Create symlinks
-*/
-{
-  config,
-  pkgs,
-  inputs,
-  ...
-}: let
+# Create symlinks
+{ config, pkgs, inputs, ... }:
+let
   stateVersion = "24.11";
   system = "x86_64-linux";
   unstable = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
     sha256 = "1blzcjd13srns4f5b4sl5ad2qqr8wh0p7pxbyl1c15lrsa075v8h";
-  }) {system = system;};
+  }) { inherit system; };
   hostname = "znix";
   user = "zedro";
 in {
@@ -70,7 +60,7 @@ in {
   networking = {
     hostName = hostname; # Define your hostname
     networkmanager.enable = true; # Enable networking
-    wireless.enable = false;  # Enables wireless support via wpa_supplicant.
+    wireless.enable = false; # Enables wireless support via wpa_supplicant.
     # Configure network proxy if necessary
     # proxy.default = "http://user:password@proxy:port/";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -102,11 +92,7 @@ in {
     bluetooth = {
       enable = true;
       # hsphfpd.enable = true;
-      settings = {
-        General = {
-          Enable = "Source,Sink,Media,Socket";
-        };
-      };
+      settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
     };
     # VIDEO
     graphics = {
@@ -120,7 +106,7 @@ in {
       # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead
       # of just the bare essentials.
       powerManagement.enable = false;
-
+      #
       # Fine-grained power management. Turns off GPU when not in use.
       # Experimental and only works on modern Nvidia GPUs (Turing or newer).
       powerManagement.finegrained = false;
@@ -160,20 +146,18 @@ in {
       };
     };
     # Enable CUPS to print documents.
-    printing = {
-      enable = true;
-    };
+    printing = { enable = true; };
     # Enable the OpenSSH daemon.
     openssh = {
       enable = true;
-      ports = [22];
+      ports = [ 22 ];
     };
     # Enable mDNS responder to resolve IP addresses
     avahi.enable = true;
   };
 
   security = {
-    rtkit.enable = true;  
+    rtkit.enable = true;
     polkit.enable = true;
     sudo = {
       enable = true;
@@ -207,12 +191,7 @@ in {
     description = "Zedro";
     shell = pkgs.zsh;
     extraGroups = [ "networkmanager" "wheel" "audio" "libvirt" ];
-    packages = with pkgs; [
-      cowsay
-      neo-cowsay
-      fortune
-      fortune-kind
-    ];
+    packages = with pkgs; [ cowsay neo-cowsay fortune fortune-kind ];
   };
 
   virtualisation = {
@@ -225,21 +204,18 @@ in {
       enable = true;
       xwayland.enable = true;
     };
-    zsh = {
-      enable = true;
-    };
+    zsh = { enable = true; };
     virt-manager.enable = true;
 
     nix-ld = {
       enable = true;
-      libraries = with pkgs; [
-        lua-language-server
-      ];
+      libraries = with pkgs; [ lua-language-server ];
     };
   };
 
   xdg = {
-    portal = { # Enable desktop programs interactions
+    portal = {
+      # Enable desktop programs interactions
       enable = true;
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
@@ -264,6 +240,8 @@ in {
     nix-output-monitor
     nil
     alejandra
+    statix
+    deadnix
     nixfmt-classic
 
     # Terminal
@@ -277,7 +255,7 @@ in {
     git
     gh
     lazygit
-    
+
     # Shell
     beautysh
     zsh
@@ -285,7 +263,7 @@ in {
     nushell
     atuin
     starship
-    
+
     # Editors
     vim
     unstable.neovim
@@ -298,9 +276,9 @@ in {
 
     # Libs
     llvmPackages_19.libllvm
-    
+
     # Bash
-    bash-language-server 
+    bash-language-server
 
     # C/C++
     unstable.clang
@@ -377,15 +355,15 @@ in {
     usbutils # lsusb
 
     # Utils
-    virt-manager  # Virtual Machine Manager
-    virt-viewer   # ...
-    polkit_gnome  # Authentication Manager
-    zoxide        # Navigation Helper (Teleporter) 
-    ranger        # Vim-like Navigator 
-    eza           # Colourful ls
-    unzip         # Compress /Decompress
-    fzf           # fuzzy finder
-    ripgrep       # ...
+    virt-manager # Virtual Machine Manager
+    virt-viewer # ...
+    polkit_gnome # Authentication Manager
+    zoxide # Navigation Helper (Teleporter)
+    ranger # Vim-like Navigator
+    eza # Colourful ls
+    unzip # Compress /Decompress
+    fzf # fuzzy finder
+    ripgrep # ...
     bat
     fx
     tree
@@ -400,10 +378,12 @@ in {
     ############
     # Hyprland #
     ############
-    (pkgs.hyprland.override { # or inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland
-      enableXWayland = true;  # whether to enable XWayland
-      legacyRenderer = false; # whether to use the legacy renderer (for old GPUs)
-      withSystemd = true;     # whether to build with systemd support
+    (pkgs.hyprland.override {
+      # or inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland
+      enableXWayland = true; # whether to enable XWayland
+      legacyRenderer =
+        false; # whether to use the legacy renderer (for old GPUs)
+      withSystemd = true; # whether to build with systemd support
     })
     hyprls
     waybar # Status bar
@@ -425,31 +405,21 @@ in {
 
     qt6ct
 
-
     # Create an FHS environment using the command `fhs`, enabling the execution of non-NixOS packages in NixOS!
-    (let
-      base = pkgs.appimageTools.defaultFhsEnvArgs;
-    in
-      pkgs.buildFHSUserEnv (base
-        // {
-          name = "fhs";
-          targetPkgs = pkgs:
-          # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
-          # lacking many basic packages needed by most software.
-          # Therefore, we need to add them manually.
-          #
-          # pkgs.appimageTools provides basic packages required by most software.
-            (base.targetPkgs pkgs)
-            ++ (
-              with pkgs; [
-                pkg-config
-                ncurses
-              ]
-            );
-          profile = "export FHS=1";
-          runScript = "bash";
-          extraOutputsToInstall = ["dev"];
-        }))
+    (let base = pkgs.appimageTools.defaultFhsEnvArgs;
+    in pkgs.buildFHSUserEnv (base // {
+      name = "fhs";
+      targetPkgs = pkgs:
+        # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
+        # lacking many basic packages needed by most software.
+        # Therefore, we need to add them manually.
+        #
+        # pkgs.appimageTools provides basic packages required by most software.
+        (base.targetPkgs pkgs) ++ (with pkgs; [ pkg-config ncurses ]);
+      profile = "export FHS=1";
+      runScript = "bash";
+      extraOutputsToInstall = [ "dev" ];
+    }))
   ];
 
   fonts.packages = with pkgs; [
@@ -516,7 +486,7 @@ in {
     settings = {
       auto-optimise-store = true;
       # Enable Flakes
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [ "nix-command" "flakes" ];
     };
     gc = {
       automatic = true;

@@ -9,37 +9,52 @@
     };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    home-manager,
-  }: let
-    # Variables Used In Flake
-    system = "x86_64-linux";
-    vars = {
-      user = "zedro";
-      location = "$HOME/.nix_flake";
-      terminal = "ghostty";
-      editor = "nvim";
-    };
+  outputs = inputs@{ self, nixpkgs, home-manager, }:
+    let
+      # Variables Used In Flake
+      system = "x86_64-linux";
+      vars = {
+        user = "zedro";
+        location = "$HOME/.nix_flake";
+        terminal = "ghostty";
+        editor = "nvim";
+      };
 
-    # System Specific ettings
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
-
-  in {
-    # Desktop Config
-    nixosConfigurations = {
-      znix = nixpkgs.lib.nixosSystem {
+      # System Specific ettings
+      pkgs = import nixpkgs {
         inherit system;
-        specialArgs = { 
-          inherit inputs; 
+        config.allowUnfree = true;
+      };
+    in {
+      # Desktop Config
+      nixosConfigurations = {
+        znix = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/znix/configuration.nix
+            # ./hosts/znix/hardware-configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit vars; };
+              home-manager.users.${vars.user} = import ./home.nix;
+            }
+          ];
         };
-        modules = [ 
-          ./hosts/znix/configuration.nix
-          # ./hosts/znix/hardware-configuration.nix
+      };
+
+      # VM configuration
+      nixvm = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = {
+          inherit inputs;
+          hostname = "nixvm";
+        };
+        modules = [
+          ./hosts/nixvm/configuration.nix
+          ./hosts/nixvm/hardware-configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -50,25 +65,4 @@
         ];
       };
     };
-
-    # VM configuration
-    nixvm = nixpkgs.lib.nixosSystem {
-      inherit system;
-      specialArgs = { 
-        inherit inputs; 
-        hostname = "nixvm"; 
-      };
-      modules = [
-        ./hosts/nixvm/configuration.nix
-        ./hosts/nixvm/hardware-configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit vars; };
-          home-manager.users.${vars.user} = import ./home.nix;
-        }
-      ];
-    };
-  };
 }
