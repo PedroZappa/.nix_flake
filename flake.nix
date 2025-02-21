@@ -29,16 +29,13 @@
       config.allowUnfree = true;
     };
 
-    # Import zap-zsh.nix for use in configurations
-    zap-zsh = import ./zap-zsh.nix {inherit (pkgs) lib stdenv fetchFromGitHub;};
-
   in {
-    # System Wide Config
+    # Desktop Config
     nixosConfigurations = {
       znix = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { 
-          inherit inputs zap-zsh; 
+          inherit inputs; 
         };
         modules = [ 
           ./hosts/znix/configuration.nix
@@ -52,14 +49,13 @@
           }
         ];
       };
-      specialArgs = {inherit zap-zsh;};
     };
 
     # VM configuration
     nixvm = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { 
-        inherit inputs zap-zsh; 
+        inherit inputs; 
         hostname = "nixvm"; 
       };
       modules = [

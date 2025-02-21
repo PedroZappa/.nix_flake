@@ -20,7 +20,6 @@ Create symlinks
 {
   config,
   pkgs,
-  zap-zsh,
   inputs,
   ...
 }: let
@@ -206,13 +205,18 @@ in {
     isNormalUser = true;
     description = "Zedro";
     shell = pkgs.zsh;
-    extraGroups = ["networkmanager" "wheel" "audio"];
+    extraGroups = [ "networkmanager" "wheel" "audio" "libvirt" ];
     packages = with pkgs; [
       cowsay
       neo-cowsay
       fortune
       fortune-kind
     ];
+  };
+
+  virtualisation = {
+    libvirtd.enable = true;
+    spiceUSBRedirection.enable = true;
   };
 
   programs = {
@@ -223,6 +227,7 @@ in {
     zsh = {
       enable = true;
     };
+    virt-manager.enable = true;
 
     nix-ld = {
       enable = true;
