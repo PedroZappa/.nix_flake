@@ -36,7 +36,6 @@ in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    # inputs.home-manager.nixosModules.default
   ];
 
   # Bootloader.
@@ -72,7 +71,7 @@ in {
   networking = {
     hostName = hostname; # Define your hostname
     networkmanager.enable = true; # Enable networking
-    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+    wireless.enable = false;  # Enables wireless support via wpa_supplicant.
     # Configure network proxy if necessary
     # proxy.default = "http://user:password@proxy:port/";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -216,7 +215,6 @@ in {
     ];
   };
 
-
   programs = {
     hyprland = {
       enable = true;
@@ -234,6 +232,13 @@ in {
     };
   };
 
+  xdg = {
+    portal = { # Enable desktop programs interactions
+      enable = true;
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    };
+  };
+
   environment = {
     sessionVariables = {
       # if cursor becomes invisible
@@ -246,9 +251,8 @@ in {
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
+    # Nix
     # it provides the command `nom` works just like `nix`
     # with more details log output
     nix-output-monitor
@@ -321,16 +325,18 @@ in {
     python3Full
     ruff
     pyright
+    uv
 
     # Debug & Heuristics
     valgrind
     gdb
     # Package Managers
     cargo
-    uv
+
     # Web
     google-chrome
     nodejs_23
+    yarn
     wget
     curl
 
@@ -365,13 +371,15 @@ in {
     usbutils # lsusb
 
     # Utils
-    zoxide
-    ranger
-    eza
-    unzip
-    fzf
-    ripgrep
-    yarn
+    
+    virt-manager  # Virtual Machine Manager
+    virt-viewer   # ...
+    zoxide        # Navigation Helper (Teleporter) 
+    ranger        # Vim-like Navigator 
+    eza           # Colourful ls
+    unzip         # Compress /Decompress
+    fzf           # fuzzy finder
+    ripgrep       # ...
     bat
     fx
     tree
@@ -436,13 +444,6 @@ in {
           extraOutputsToInstall = ["dev"];
         }))
   ];
-
-  xdg = {
-    portal = { # Enable desktop programs interactions
-      enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    };
-  };
 
   fonts.packages = with pkgs; [
     carlito # NixOS

@@ -38,7 +38,7 @@
       znix = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { 
-          inherit inputs; 
+          inherit inputs zap-zsh; 
         };
         modules = [ 
           ./hosts/znix/configuration.nix
@@ -47,7 +47,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            # home-manager.extraSpecialArgs = { inherit vars; };
+            home-manager.extraSpecialArgs = { inherit vars; };
             home-manager.users.${vars.user} = import ./home.nix;
           }
         ];
@@ -56,23 +56,23 @@
     };
 
     # VM configuration
-    # nixvm = nixpkgs.lib.nixosSystem {
-    #   inherit system;
-    #   specialArgs = { 
-    #     inherit inputs zap-zsh; 
-    #     hostname = "nixvm"; 
-    #   };
-    #   modules = [
-    #     ./hosts/nixvm/configuration.nix
-    #     ./hosts/nixvm/hardware-configuration.nix
-    #     home-manager.nixosModules.home-manager
-    #     {
-    #       home-manager.useGlobalPkgs = true;
-    #       home-manager.useUserPackages = true;
-    #       home-manager.extraSpecialArgs = { inherit vars; };
-    #       home-manager.users.${vars.user} = import ./home.nix;
-    #     }
-    #   ];
-    # };
+    nixvm = nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = { 
+        inherit inputs zap-zsh; 
+        hostname = "nixvm"; 
+      };
+      modules = [
+        ./hosts/nixvm/configuration.nix
+        ./hosts/nixvm/hardware-configuration.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = { inherit vars; };
+          home-manager.users.${vars.user} = import ./home.nix;
+        }
+      ];
+    };
   };
 }
