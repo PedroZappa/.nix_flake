@@ -11,14 +11,18 @@
 # Log back in
 # sudo rm -fr /etc/nixos/configuration.nix
 # Create symlinks
-{ config, pkgs, inputs, ... }:
-let
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}: let
   stateVersion = "24.11";
   system = "x86_64-linux";
   unstable = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
     sha256 = "1blzcjd13srns4f5b4sl5ad2qqr8wh0p7pxbyl1c15lrsa075v8h";
-  }) { inherit system; };
+  }) {inherit system;};
   hostname = "znix";
   user = "zedro";
 in {
@@ -51,6 +55,47 @@ in {
   fileSystems."/boot" = {
     device = "/dev/nvme0n1p1";
     fsType = "vfat";
+  };
+
+  # Hardware
+  hardware = {
+    # Bluetooth Config
+    bluetooth = {
+      enable = true;
+      # hsphfpd.enable = true;
+      settings = {General = {Enable = "Source,Sink,Media,Socket";};};
+    };
+    # VIDEO
+    graphics = {
+      enable = true; # Enable OpenGL
+    };
+    nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      modesetting.enable = true;
+      # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
+      # Enable this if you have graphical corruption issues or application crashes after waking
+      # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead
+      # of just the bare essentials.
+      powerManagement.enable = false;
+      #
+      # Fine-grained power management. Turns off GPU when not in use.
+      # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+      powerManagement.finegrained = false;
+
+      # Use the NVidia open source kernel module (not to be confused with the
+      # independent third-party "nouveau" open source driver).
+      # Support is limited to the Turing and later architectures. Full list of
+      # supported GPUs is at:
+      # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
+      # Only available from driver 515.43.04+
+      open = false;
+
+      # Enable the Nvidia settings menu,
+      # accessible via `nvidia-settings`.
+      nvidiaSettings = true;
+    };
+    # AUDIO
+    pulseaudio.enable = false;
   };
 
   # Open ports in the firewall.
@@ -86,46 +131,6 @@ in {
     LC_TELEPHONE = "pt_PT.UTF-8";
     LC_TIME = "pt_PT.UTF-8";
   };
-  # Hardware
-  hardware = {
-    # Bluetooth Config
-    bluetooth = {
-      enable = true;
-      # hsphfpd.enable = true;
-      settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
-    };
-    # VIDEO
-    graphics = {
-      enable = true; # Enable OpenGL
-    };
-    nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      modesetting.enable = true;
-      # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-      # Enable this if you have graphical corruption issues or application crashes after waking
-      # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead
-      # of just the bare essentials.
-      powerManagement.enable = false;
-      #
-      # Fine-grained power management. Turns off GPU when not in use.
-      # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-      powerManagement.finegrained = false;
-
-      # Use the NVidia open source kernel module (not to be confused with the
-      # independent third-party "nouveau" open source driver).
-      # Support is limited to the Turing and later architectures. Full list of
-      # supported GPUs is at:
-      # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
-      # Only available from driver 515.43.04+
-      open = false;
-
-      # Enable the Nvidia settings menu,
-      # accessible via `nvidia-settings`.
-      nvidiaSettings = true;
-    };
-    # AUDIO
-    pulseaudio.enable = false;
-  };
 
   # Load nvidia driver for Xorg and Wayland
   # services.xserver.videoDrivers = ["nvidia"];
@@ -146,11 +151,11 @@ in {
       };
     };
     # Enable CUPS to print documents.
-    printing = { enable = true; };
+    printing = {enable = true;};
     # Enable the OpenSSH daemon.
     openssh = {
       enable = true;
-      ports = [ 22 ];
+      ports = [22];
     };
     # Enable mDNS responder to resolve IP addresses
     avahi.enable = true;
@@ -169,10 +174,10 @@ in {
   # Enable sound with pipewire.
   services.pipewire = {
     enable = true;
-    alsa.enable = true;
+    alsa.enable = false;
     alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
+    pulse.enable = false;
+    jack.enable = false;
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
@@ -190,8 +195,8 @@ in {
     isNormalUser = true;
     description = "Zedro";
     shell = pkgs.zsh;
-    extraGroups = [ "networkmanager" "wheel" "audio" "libvirt" ];
-    packages = with pkgs; [ cowsay neo-cowsay fortune fortune-kind ];
+    extraGroups = ["networkmanager" "wheel" "audio" "libvirt"];
+    packages = with pkgs; [cowsay neo-cowsay fortune fortune-kind];
   };
 
   virtualisation = {
@@ -204,12 +209,12 @@ in {
       enable = true;
       xwayland.enable = true;
     };
-    zsh = { enable = true; };
+    zsh = {enable = true;};
     virt-manager.enable = true;
 
     nix-ld = {
       enable = true;
-      libraries = with pkgs; [ lua-language-server ];
+      libraries = with pkgs; [lua-language-server];
     };
   };
 
@@ -217,7 +222,7 @@ in {
     portal = {
       # Enable desktop programs interactions
       enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      extraPortals = [pkgs.xdg-desktop-portal-gtk];
     };
   };
 
@@ -267,6 +272,9 @@ in {
     # Editors
     vim
     unstable.neovim
+
+    # Markdown
+    glow
 
     # Build Tools
     gnumake42
@@ -406,20 +414,23 @@ in {
     qt6ct
 
     # Create an FHS environment using the command `fhs`, enabling the execution of non-NixOS packages in NixOS!
-    (let base = pkgs.appimageTools.defaultFhsEnvArgs;
-    in pkgs.buildFHSUserEnv (base // {
-      name = "fhs";
-      targetPkgs = pkgs:
-        # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
-        # lacking many basic packages needed by most software.
-        # Therefore, we need to add them manually.
-        #
-        # pkgs.appimageTools provides basic packages required by most software.
-        (base.targetPkgs pkgs) ++ (with pkgs; [ pkg-config ncurses ]);
-      profile = "export FHS=1";
-      runScript = "bash";
-      extraOutputsToInstall = [ "dev" ];
-    }))
+    (let
+      base = pkgs.appimageTools.defaultFhsEnvArgs;
+    in
+      pkgs.buildFHSUserEnv (base
+        // {
+          name = "fhs";
+          targetPkgs = pkgs:
+          # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
+          # lacking many basic packages needed by most software.
+          # Therefore, we need to add them manually.
+          #
+          # pkgs.appimageTools provides basic packages required by most software.
+            (base.targetPkgs pkgs) ++ (with pkgs; [pkg-config ncurses]);
+          profile = "export FHS=1";
+          runScript = "bash";
+          extraOutputsToInstall = ["dev"];
+        }))
   ];
 
   fonts.packages = with pkgs; [
@@ -486,7 +497,7 @@ in {
     settings = {
       auto-optimise-store = true;
       # Enable Flakes
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = ["nix-command" "flakes"];
     };
     gc = {
       automatic = true;
