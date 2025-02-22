@@ -98,14 +98,17 @@ in {
     pulseaudio.enable = false;
   };
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ 22 ];
-  # networking.firewall.allowedUDPPorts = [ 22 ];
   # networking
   networking = {
     hostName = hostname; # Define your hostname
     networkmanager.enable = true; # Enable networking
     wireless.enable = false; # Enables wireless support via wpa_supplicant.
+
+    firewall = {
+      # Open ports in the firewall.
+      allowedTCPPorts = [22];
+      allowedUDPPorts = [22];
+    };
     # Configure network proxy if necessary
     # proxy.default = "http://user:password@proxy:port/";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -150,6 +153,18 @@ in {
         variant = "";
       };
     };
+    # Enable sound with pipewire.
+    pipewire = {
+      enable = true;
+      alsa.enable = false;
+      alsa.support32Bit = true;
+      pulse.enable = false;
+      jack.enable = false;
+
+      # use the example session manager (no others are packaged yet so this is enabled by default,
+      # no need to redefine it in your config for now)
+      #media-session.enable = true;
+    };
     # Enable CUPS to print documents.
     printing = {enable = true;};
     # Enable the OpenSSH daemon.
@@ -170,18 +185,6 @@ in {
         Defaults timestamp_timeout=666
       '';
     };
-  };
-  # Enable sound with pipewire.
-  services.pipewire = {
-    enable = true;
-    alsa.enable = false;
-    alsa.support32Bit = true;
-    pulse.enable = false;
-    jack.enable = false;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -211,7 +214,6 @@ in {
     };
     zsh = {enable = true;};
     virt-manager.enable = true;
-
     nix-ld = {
       enable = true;
       libraries = with pkgs; [lua-language-server];
@@ -225,18 +227,6 @@ in {
       extraPortals = [pkgs.xdg-desktop-portal-gtk];
     };
   };
-
-  environment = {
-    sessionVariables = {
-      # if cursor becomes invisible
-      WLR_NO_HARDWARE_CURSORS = "1";
-      # Hint electron apps to use wayland
-      NIXOS_OZONE_WL = "1";
-    };
-  };
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
     # Nix
@@ -253,13 +243,7 @@ in {
     ghostty # Terminal Emulator
     kitty
     tmux # Multiplexer
-    coreutils # GNU Utilities
     xdg-utils # Environment integration
-
-    # Git
-    git
-    gh
-    lazygit
 
     # Shell
     beautysh
@@ -269,28 +253,44 @@ in {
     atuin
     starship
 
-    # Editors
-    vim
-    unstable.neovim
+    ################
+    # Developtment #
+    ################
 
-    # Markdown
-    glow
+    # Libs
+    coreutils # GNU Utilities
+    llvmPackages_latest.lldb
+    llvmPackages_latest.libllvm
+    llvmPackages_latest.libcxx
+    llvmPackages_latest.clang
+
+    # Git
+    git
+    gh
+    lazygit
 
     # Build Tools
     gnumake42
     cmake
     ninja
     meson
+    bear # Generate compile_commands.json
+    just # make grand-son
 
-    # Libs
-    llvmPackages_19.libllvm
+    # Editors
+    vim
+    unstable.neovim
+
+    # Markdown
+    bat
+    glow
 
     # Bash
     bash-language-server
 
     # C/C++
-    unstable.clang
-    unstable.gcc
+    clang
+    gcc
     clang-tools
     libgcc
     libgccjit
@@ -303,9 +303,6 @@ in {
     vcpkg
     vcpkg-tool
     readline
-
-    # Go
-    go
 
     # Lua
     lua
@@ -322,8 +319,12 @@ in {
     # Debug & Heuristics
     valgrind
     gdb
-    # Package Managers
+
+    # Rust
     cargo
+
+    # Go
+    go
 
     # Web
     google-chrome
@@ -331,6 +332,10 @@ in {
     yarn
     wget
     curl
+
+    ##############
+    # Tools Man! #
+    ##############
 
     # networking tools
     mtr # A network diagnostic tool
@@ -350,6 +355,7 @@ in {
     iftop # network monitoring
     stow
     discord
+
     # system call monitoring
     strace # system call monitoring
     ltrace # library call monitoring
@@ -366,19 +372,18 @@ in {
     virt-manager # Virtual Machine Manager
     virt-viewer # ...
     polkit_gnome # Authentication Manager
-    zoxide # Navigation Helper (Teleporter)
+    # zoxide # Navigation Helper (Teleporter)
     ranger # Vim-like Navigator
     eza # Colourful ls
     unzip # Compress /Decompress
     fzf # fuzzy finder
     ripgrep # ...
-    bat
     fx
     tree
     vlc # Media Player
     cifs-utils # Samba
     appimage-run # Runs AppImages on NixOS
-    just # make grand-son
+
     # ScreenShots
     grim
     slurp
@@ -432,6 +437,17 @@ in {
           extraOutputsToInstall = ["dev"];
         }))
   ];
+
+  environment = {
+    sessionVariables = {
+      # if cursor becomes invisible
+      WLR_NO_HARDWARE_CURSORS = "1";
+      # Hint electron apps to use wayland
+      NIXOS_OZONE_WL = "1";
+    };
+  };
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
 
   fonts.packages = with pkgs; [
     carlito # NixOS
