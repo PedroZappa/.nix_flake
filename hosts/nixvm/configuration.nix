@@ -43,10 +43,11 @@ in {
       # };
       grub = {
         enable = true;
+  	device = "/dev/sda"; # w/out EFI
         # efiSupport = true;
         # device = "nodev"; # "nodev" for EFI
         # useOSProber = true;
-        configurationLimit = 5; # Limit stored system configs (backups)
+        configurationLimit = 3; # Limit stored system configs (backups)
       };
       timeout = 5; # Applied to both GRUB and EFI
     };
