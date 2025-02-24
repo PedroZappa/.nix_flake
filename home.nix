@@ -107,7 +107,7 @@
     fi
 
     echo "Creating .dotfiles symlinks..."
-    bash .$HOME/.nix_flake/scripts/dotfiles_symlinks.sh
+    # bash .$HOME/.nix_flake/scripts/dotfiles_symlinks.sh
   '';
 
   # Activation script to install oh-my-tmux if not already installed
