@@ -8,7 +8,6 @@
   home.username = "zedro";
   home.homeDirectory = "/home/zedro";
   home.stateVersion = "24.11"; # Please read the release notes before changing.
-  # Ensure 'uv' is available during activation
   home.extraActivationPath = with pkgs; [
     git # Get .dotfiles
     openssh # Get .dotfiles

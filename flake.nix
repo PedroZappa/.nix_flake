@@ -62,6 +62,7 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {inherit vars;};
             home-manager.users.${vars.user} = import ./home.nix;
+            home-manager.backupFileExtension = "backup";
           }
         ];
       };
