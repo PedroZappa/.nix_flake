@@ -43,8 +43,8 @@ in {
       # };
       grub = {
         enable = true;
-        device = "nodev"; # "nodev" for EFI
         # efiSupport = true;
+        # device = "nodev"; # "nodev" for EFI
         # useOSProber = true;
         configurationLimit = 5; # Limit stored system configs (backups)
       };
