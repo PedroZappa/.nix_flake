@@ -1,6 +1,3 @@
-set -e
-# -e : Exit immediately if a command exits with a non-zero status;
-
 # Color Codes
 # Run the following command to get list of available colors
 # bash -c 'for c in {0..255}; do tput setaf $c; tput setaf $c | cat -v; echo =$c; done'

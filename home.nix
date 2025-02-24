@@ -1,15 +1,20 @@
 # man home-configuration.nix
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   home.username = "zedro";
   home.homeDirectory = "/home/zedro";
   home.stateVersion = "24.11"; # Please read the release notes before changing.
   # Ensure 'uv' is available during activation
-  home.extraActivationPath = with pkgs; [ 
-    git     # Get .dotfiles
+  home.extraActivationPath = with pkgs; [
+    git # Get .dotfiles
     openssh # Get .dotfiles
-    zsh     # Get zsh to then get zap
-    curl    # Get zap, zsh Pckage manager
-    uv      # Get python apps (postings)
+    zsh # Get zsh to then get zap
+    curl # Get zap, zsh Pckage manager
+    uv # Get python apps (postings)
   ];
   # The home.packages option allows you to install Nix packages into your env.
   home.packages = with pkgs; [
@@ -33,7 +38,7 @@
 
   # Home Manager is pretty good at managing dotfileS. The primary way to manage
   # plain files is through 'home.file'.
-  home.file = { };
+  home.file = {};
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -149,9 +154,24 @@
   programs = {
     home-manager.enable = true;
     # Gnome Shell
-    gnome-shell = { enable = true; };
-    tmux = { enable = true; };
-    neovim = { enable = true; };
-    starship = { enable = true; };
+    gnome-shell = {enable = true;};
+    starship = {enable = true;};
+    tmux = {enable = true;};
+    programs.neovim = {
+      enable = true;
+      extraPackages = with pkgs; [
+        clang
+        clang-tools
+      ];
+      plugins = with pkgs.vimPlugins; [
+        nvim-lspconfig
+      ];
+      extraLuaConfig = ''
+        local nvim_lsp = require'lspconfig'
+        nvim_lsp.clangd.setup {
+          cmd = { "${pkgs.clang-tools}/bin/clangd", "--query-driver=${pkgs.gcc}/bin/g++" }
+        }
+      '';
+    };
   };
 }
