@@ -145,8 +145,6 @@
     if ! command -v posting >/dev/null 2>&1; then
       echo "Posting not found – installing via uv tool..."
       uv tool install --python 3.12 posting
-      uv tool update-shell
-
     else
       echo "Posting already installed."
     fi
@@ -159,7 +157,7 @@
     gnome-shell = {enable = true;};
     starship = {enable = true;};
     tmux = {enable = true;};
-    programs.neovim = {
+    neovim = {
       enable = true;
       extraPackages = with pkgs; [
         clang
