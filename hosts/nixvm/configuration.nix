@@ -53,50 +53,50 @@ in {
     };
   };
 
-  fileSystems."/boot" = {
-    device = "/dev/nvme0n1p1";
-    fsType = "vfat";
-  };
-
+  # fileSystems."/boot" = {
+  #   device = "/dev/nvme0n1p1";
+  #   fsType = "vfat";
+  # };
+  #
   # Hardware
   hardware = {
     # Bluetooth Config
-    bluetooth = {
-      enable = true;
-      # hsphfpd.enable = true;
-      settings = {General = {Enable = "Source,Sink,Media,Socket";};};
-    };
+    # bluetooth = {
+    #   enable = true;
+    #   # hsphfpd.enable = true;
+    #   settings = {General = {Enable = "Source,Sink,Media,Socket";};};
+    # };
     # VIDEO
     graphics = {
       enable = true; # Enable OpenGL
     };
-    nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      modesetting.enable = true;
-      # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-      # Enable this if you have graphical corruption issues or application crashes after waking
-      # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead
-      # of just the bare essentials.
-      powerManagement.enable = false;
-      #
-      # Fine-grained power management. Turns off GPU when not in use.
-      # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-      powerManagement.finegrained = false;
-
-      # Use the NVidia open source kernel module (not to be confused with the
-      # independent third-party "nouveau" open source driver).
-      # Support is limited to the Turing and later architectures. Full list of
-      # supported GPUs is at:
-      # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
-      # Only available from driver 515.43.04+
-      open = false;
-
-      # Enable the Nvidia settings menu,
-      # accessible via `nvidia-settings`.
-      nvidiaSettings = true;
-    };
+    # nvidia = {
+    #   package = config.boot.kernelPackages.nvidiaPackages.stable;
+    #   modesetting.enable = true;
+    #   # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
+    #   # Enable this if you have graphical corruption issues or application crashes after waking
+    #   # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead
+    #   # of just the bare essentials.
+    #   powerManagement.enable = false;
+    #   #
+    #   # Fine-grained power management. Turns off GPU when not in use.
+    #   # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+    #   powerManagement.finegrained = false;
+    #
+    #   # Use the NVidia open source kernel module (not to be confused with the
+    #   # independent third-party "nouveau" open source driver).
+    #   # Support is limited to the Turing and later architectures. Full list of
+    #   # supported GPUs is at:
+    #   # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
+    #   # Only available from driver 515.43.04+
+    #   open = false;
+    #
+    #   # Enable the Nvidia settings menu,
+    #   # accessible via `nvidia-settings`.
+    #   nvidiaSettings = true;
+    # };
     # AUDIO
-    pulseaudio.enable = false;
+    # pulseaudio.enable = false;
   };
 
   # networking
@@ -156,10 +156,10 @@ in {
     # Enable sound with pipewire.
     pipewire = {
       enable = true;
-      alsa.enable = false;
-      alsa.support32Bit = true;
-      pulse.enable = false;
-      jack.enable = false;
+      # alsa.enable = false;
+      # alsa.support32Bit = true;
+      # pulse.enable = false;
+      # jack.enable = false;
 
       # use the example session manager (no others are packaged yet so this is enabled by default,
       # no need to redefine it in your config for now)
@@ -202,10 +202,10 @@ in {
     packages = with pkgs; [cowsay neo-cowsay fortune fortune-kind];
   };
 
-  virtualisation = {
-    libvirtd.enable = true;
-    spiceUSBRedirection.enable = true;
-  };
+  # virtualisation = {
+  #   libvirtd.enable = true;
+  #   spiceUSBRedirection.enable = true;
+  # };
 
   programs = {
     hyprland = {
@@ -213,7 +213,7 @@ in {
       xwayland.enable = true;
     };
     zsh = {enable = true;};
-    virt-manager.enable = true;
+    # virt-manager.enable = true;
     nix-ld = {
       enable = true;
       libraries = with pkgs; [lua-language-server];
@@ -235,7 +235,7 @@ in {
     nix-output-monitor
     nil
     alejandra
-    statix
+    # statix
     deadnix
     nixfmt-classic
 
@@ -391,32 +391,32 @@ in {
     ############
     # Hyprland #
     ############
-    (pkgs.hyprland.override {
-      # or inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland
-      enableXWayland = true; # whether to enable XWayland
-      legacyRenderer =
-        false; # whether to use the legacy renderer (for old GPUs)
-      withSystemd = true; # whether to build with systemd support
-    })
-    hyprls
-    waybar # Status bar
-    eww # Desktop widgets
-    hyprpaper # wallpaper daemon
-    hyprshot # screenshot daemon
-    hyprlock # Lock
-    hypridle # Idle
-    hyprpicker # color picker daemon
-    hyprcursor # color picker daemon
-    networkmanagerapplet # network manager applet
-    swaynotificationcenter # Notification daemon ()
-    libnotify
-    clipse # Clipboard Manager
-    fuzzel # App launcher/fuzzy finder
-    wofi
-    walker # app launcher
-    dolphin # file manager
-
-    qt6ct
+    # (pkgs.hyprland.override {
+    #   # or inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland
+    #   enableXWayland = true; # whether to enable XWayland
+    #   legacyRenderer =
+    #     false; # whether to use the legacy renderer (for old GPUs)
+    #   withSystemd = true; # whether to build with systemd support
+    # })
+    # hyprls
+    # waybar # Status bar
+    # eww # Desktop widgets
+    # hyprpaper # wallpaper daemon
+    # hyprshot # screenshot daemon
+    # hyprlock # Lock
+    # hypridle # Idle
+    # hyprpicker # color picker daemon
+    # hyprcursor # color picker daemon
+    # networkmanagerapplet # network manager applet
+    # swaynotificationcenter # Notification daemon ()
+    # libnotify
+    # clipse # Clipboard Manager
+    # fuzzel # App launcher/fuzzy finder
+    # wofi
+    # walker # app launcher
+    # dolphin # file manager
+    #
+    # qt6ct
 
     # Create an FHS environment using the command `fhs`, enabling the execution of non-NixOS packages in NixOS!
     # (let
