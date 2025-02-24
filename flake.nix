@@ -40,7 +40,7 @@
     # Desktop Config
     nixosConfigurations = {
       znix = nixpkgs.lib.nixosSystem {
-        inherit system;
+        system = "x86_64-linux";
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/znix/configuration.nix
@@ -54,26 +54,25 @@
           }
         ];
       };
-    };
-
-    # VM configuration
-    nixvm = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {
-        inherit inputs;
-        hostname = "nixvm";
+      # VM configuration
+      nixvm = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          hostname = "nixvm";
+        };
+        modules = [
+          ./hosts/nixvm/configuration.nix
+          ./hosts/nixvm/hardware-configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {inherit vars;};
+            home-manager.users.${vars.user} = import ./home.nix;
+          }
+        ];
       };
-      modules = [
-        ./hosts/nixvm/configuration.nix
-        ./hosts/nixvm/hardware-configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = {inherit vars;};
-          home-manager.users.${vars.user} = import ./home.nix;
-        }
-      ];
     };
   };
 }
