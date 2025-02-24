@@ -21,7 +21,7 @@
   system = "x86_64-linux";
   unstable = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-    sha256 = "068vakv6i9rwqi81m1qj328p2hsf5ddj84vrw6hwl6m19ns0wfm3";
+    sha256 = "0328lh3ghdbglwd69774sx3an9ym7193xwvypa1gzbnw11a8frjq";
   }) {inherit system;};
   hostname = "znix";
   user = "zedro";
@@ -44,7 +44,7 @@ in {
       grub = {
         enable = true;
         device = "nodev"; # "nodev" for EFI
-        efiSupport = true;
+        # efiSupport = true;
         # useOSProber = true;
         configurationLimit = 5; # Limit stored system configs (backups)
       };
