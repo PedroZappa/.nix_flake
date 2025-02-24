@@ -157,21 +157,21 @@
     gnome-shell = {enable = true;};
     starship = {enable = true;};
     tmux = {enable = true;};
-    neovim = {
-      enable = true;
-      extraPackages = with pkgs; [
-        clang
-        clang-tools
-      ];
-      plugins = with pkgs.vimPlugins; [
-        nvim-lspconfig
-      ];
-      extraLuaConfig = ''
-        local nvim_lsp = require'lspconfig'
-        nvim_lsp.clangd.setup {
-          cmd = { "${pkgs.clang-tools}/bin/clangd", "--query-driver=${pkgs.gcc}/bin/g++" }
-        }
-      '';
-    };
+    # neovim = {
+    #   enable = true;
+    #   extraPackages = with pkgs; [
+    #     clang
+    #     clang-tools
+    #   ];
+    #   plugins = with pkgs.vimPlugins; [
+    #     nvim-lspconfig
+    #   ];
+    #   extraLuaConfig = ''
+    #     local nvim_lsp = require'lspconfig'
+    #     nvim_lsp.clangd.setup {
+    #       cmd = { "${pkgs.clang-tools}/bin/clangd", "--query-driver=${pkgs.gcc}/bin/g++" }
+    #     }
+    #   '';
+    # };
   };
 }
