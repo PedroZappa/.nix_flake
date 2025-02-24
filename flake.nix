@@ -58,7 +58,7 @@
 
     # VM configuration
     nixvm = nixpkgs.lib.nixosSystem {
-      inherit system;
+      system = "x86_64-linux";
       specialArgs = {
         inherit inputs;
         hostname = "nixvm";
