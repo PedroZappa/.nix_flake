@@ -199,7 +199,7 @@ in {
     description = "Zedro";
     shell = pkgs.zsh;
     extraGroups = ["networkmanager" "wheel" "audio" "libvirt"];
-    packages = with pkgs; [cowsay neo-cowsay fortune fortune-kind];
+    packages = with pkgs; [git cowsay neo-cowsay fortune fortune-kind];
   };
 
   # virtualisation = {
