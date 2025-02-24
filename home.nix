@@ -5,8 +5,9 @@
   home.stateVersion = "24.11"; # Please read the release notes before changing.
   # Ensure 'uv' is available during activation
   home.extraActivationPath = with pkgs; [ 
-    git # Get .dotfiles
-    uv  # Get python apps (postings)
+    git     # Get .dotfiles
+    openssh # Get .dotfiles
+    uv      # Get python apps (postings)
   ];
   # The home.packages option allows you to install Nix packages into your env.
   home.packages = with pkgs; [
