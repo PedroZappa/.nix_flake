@@ -4,7 +4,10 @@
   home.homeDirectory = "/home/zedro";
   home.stateVersion = "24.11"; # Please read the release notes before changing.
   # Ensure 'uv' is available during activation
-  home.extraActivationPath = [ pkgs.uv ];
+  home.extraActivationPath = with; [ 
+    git # Get .dotfiles
+    uv  # Get python apps (postings)
+  ];
   # The home.packages option allows you to install Nix packages into your env.
   home.packages = with pkgs; [
     git # Distributed revision control system
@@ -102,6 +105,9 @@
     else
       echo "Dotfiles repository already exists."
     fi
+
+    echo "Creating .dotfiles symlinks..."
+    ./scripts/dotfiles_symlinks.sh
   '';
 
   # Activation script to install oh-my-tmux if not already installed
