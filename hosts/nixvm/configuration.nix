@@ -21,7 +21,7 @@
   system = "x86_64-linux";
   unstable = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-    sha256 = "0000000000000000000000000000000000000000000000000000";
+    sha256 = "068vakv6i9rwqi81m1qj328p2hsf5ddj84vrw6hwl6m19ns0wfm3";
   }) {inherit system;};
   hostname = "znix";
   user = "zedro";
@@ -37,10 +37,10 @@ in {
     # Load NVIDIA kernel modules during initrd stage : https://nixos.wiki/wiki/Nvidia
     # initrd.kernelModules = ["nvidia"];
     loader = {
-      efi = {
-        canTouchEfiVariables = true;
-        #efiSysMountPoint = "/boot/efi";
-      };
+      # efi = {
+      #   canTouchEfiVariables = true;
+      #   #efiSysMountPoint = "/boot/efi";
+      # };
       grub = {
         enable = true;
         device = "nodev"; # "nodev" for EFI
@@ -425,17 +425,17 @@ in {
     #     // {
     #       name = "fhs";
     #       targetPkgs = pkgs:
-          targetPkgs = pkgs:
+          #targetPkgs = pkgs:
           # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
           # lacking many basic packages needed by most software.
           # Therefore, we need to add them manually.
           #
           # pkgs.appimageTools provides basic packages required by most software.
-            (base.targetPkgs pkgs) ++ (with pkgs; [pkg-config ncurses]);
-          profile = "export FHS=1";
-          runScript = "bash";
-          extraOutputsToInstall = ["dev"];
-        }))
+          #  (base.targetPkgs pkgs) ++ (with pkgs; [pkg-config ncurses]);
+          #profile = "export FHS=1";
+          #runScript = "bash";
+          #extraOutputsToInstall = ["dev"];
+        #}))
   ];
 
   environment = {
