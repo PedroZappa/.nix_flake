@@ -7,11 +7,12 @@
   home.extraActivationPath = with pkgs; [ 
     git     # Get .dotfiles
     openssh # Get .dotfiles
+    zsh     # Get zsh to then get zap
+    curl    # Get zap, zsh Pckage manager
     uv      # Get python apps (postings)
   ];
   # The home.packages option allows you to install Nix packages into your env.
   home.packages = with pkgs; [
-    curl # Get a file from an HTTP, HTTPS or FTP server
     jq # CLI for working with JSON
     # All that silly shit
     dwt1-shell-color-scripts # Scripts to look good
