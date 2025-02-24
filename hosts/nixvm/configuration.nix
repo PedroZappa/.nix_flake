@@ -418,13 +418,13 @@ in {
     qt6ct
 
     # Create an FHS environment using the command `fhs`, enabling the execution of non-NixOS packages in NixOS!
-    (let
-      base = pkgs.appimageTools.defaultFhsEnvArgs;
-    in
-      pkgs.buildFHSUserEnv (base
-        // {
-          name = "fhs";
-          targetPkgs = pkgs:
+    # (let
+    #   base = pkgs.appimageTools.defaultFhsEnvArgs;
+    # in
+    #   pkgs.buildFHSUserEnv (base
+    #     // {
+    #       name = "fhs";
+    #       targetPkgs = pkgs:
           targetPkgs = pkgs:
           # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
           # lacking many basic packages needed by most software.
