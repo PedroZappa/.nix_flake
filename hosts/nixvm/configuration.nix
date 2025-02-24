@@ -21,7 +21,7 @@
   system = "x86_64-linux";
   unstable = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-    sha256 = "1blzcjd13srns4f5b4sl5ad2qqr8wh0p7pxbyl1c15lrsa075v8h";
+    sha256 = "0000000000000000000000000000000000000000000000000000";
   }) {inherit system;};
   hostname = "znix";
   user = "zedro";
@@ -111,7 +111,6 @@ in {
     };
     # Configure network proxy if necessary
     # proxy.default = "http://user:password@proxy:port/";
-    # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   };
 
   # Internationalizations (Locales)
@@ -425,6 +424,7 @@ in {
       pkgs.buildFHSUserEnv (base
         // {
           name = "fhs";
+          targetPkgs = pkgs:
           targetPkgs = pkgs:
           # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
           # lacking many basic packages needed by most software.
