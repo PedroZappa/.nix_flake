@@ -47,7 +47,7 @@ in {
         # efiSupport = true;
         # device = "nodev"; # "nodev" for EFI
         # useOSProber = true;
-        configurationLimit = 3; # Limit stored system configs (backups)
+        configurationLimit = 10; # Limit stored system configs (backups)
       };
       timeout = 5; # Applied to both GRUB and EFI
     };
@@ -236,7 +236,7 @@ in {
     nil
     alejandra
     # statix
-    deadnix
+    # deadnix
     nixfmt-classic
 
     # Terminal
@@ -262,6 +262,7 @@ in {
     llvmPackages_latest.lldb
     llvmPackages_latest.libllvm
     llvmPackages_latest.libcxx
+    llvmPackages_latest.clang-tools
     llvmPackages_latest.clang
 
     # Git
