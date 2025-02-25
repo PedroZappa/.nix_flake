@@ -28,7 +28,7 @@
 in {
   imports = [
     # Include the results of the hardware scan.
-    ~/etc/nixos/hardware-configuration.nix
+    ./hardware-configuration.nix
   ];
 
   # Bootloader.
@@ -43,7 +43,7 @@ in {
       # };
       grub = {
         enable = true;
-  	device = "/dev/sda"; # w/out EFI
+        device = "/dev/sda"; # w/out EFI
         # efiSupport = true;
         # device = "nodev"; # "nodev" for EFI
         # useOSProber = true;
@@ -291,7 +291,11 @@ in {
     # C/C++
     clang
     gcc
-    clang-tools
+    # clang-tools
+    (hiPrio clang-tools.override {
+      llvmPackages = llvmPackages_16;
+      enableLibcxx = false;
+    })
     libgcc
     libgccjit
     codespell
@@ -426,17 +430,17 @@ in {
     #     // {
     #       name = "fhs";
     #       targetPkgs = pkgs:
-          #targetPkgs = pkgs:
-          # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
-          # lacking many basic packages needed by most software.
-          # Therefore, we need to add them manually.
-          #
-          # pkgs.appimageTools provides basic packages required by most software.
-          #  (base.targetPkgs pkgs) ++ (with pkgs; [pkg-config ncurses]);
-          #profile = "export FHS=1";
-          #runScript = "bash";
-          #extraOutputsToInstall = ["dev"];
-        #}))
+    #targetPkgs = pkgs:
+    # pkgs.buildFHSUserEnv provides only a minimal FHS environment,
+    # lacking many basic packages needed by most software.
+    # Therefore, we need to add them manually.
+    #
+    # pkgs.appimageTools provides basic packages required by most software.
+    #  (base.targetPkgs pkgs) ++ (with pkgs; [pkg-config ncurses]);
+    #profile = "export FHS=1";
+    #runScript = "bash";
+    #extraOutputsToInstall = ["dev"];
+    #}))
   ];
 
   environment = {
