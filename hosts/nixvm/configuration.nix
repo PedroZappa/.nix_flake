@@ -291,11 +291,11 @@ in {
     # C/C++
     clang
     gcc
-    # clang-tools
-    (hiPrio clang-tools.override {
-      llvmPackages = llvmPackages_16;
-      enableLibcxx = false;
-    })
+    clang-tools
+    # (hiPrio clang-tools.override {
+    #   llvmPackages = llvmPackages_16;
+    #   enableLibcxx = false;
+    # })
     libgcc
     libgccjit
     codespell
