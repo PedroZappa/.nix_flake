@@ -53,5 +53,3 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# Hardware configs
-hardware-configuration.nix
